@@ -32,8 +32,8 @@ def main() -> None:
     set_app_user_model_id("EnvDataMqtt_Setup")  # harmless on non-Windows
     app = QApplication(sys.argv)
 
-    ico_path = resource_path("../resources/EnvDataMqtt_Setup.ico")
-    png_path = resource_path("../resources/EnvDataMqtt_Setup.png")
+    ico_path = resource_path("./icons/EnvDataMqtt_Setup.ico")
+    png_path = resource_path("./icons/EnvDataMqtt_Setup.png")
 
     if sys.platform == "win32" and os.path.exists(ico_path):
         app.setWindowIcon(QIcon(ico_path))

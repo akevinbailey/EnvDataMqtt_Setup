@@ -9,8 +9,8 @@ cd /d "%~dp0"
 
 set "NAME=EnvDataMqtt_Setup"
 set "SCRIPT=.\src\EnvDataMqtt_Setup.py"
-set "ICON_1=.\resources\EnvDataMqtt_Setup.ico"
-set "ICON_2=.\resources\EnvDataMqtt_Setup.png"
+set "ICON_1=.\src\icons\EnvDataMqtt_Setup.ico"
+set "ICON_2=.\src\icons\EnvDataMqtt_Setup.png"
 
 echo [CLEAN] Removing previous build artifacts...
 if exist build rmdir /s /q build
@@ -26,8 +26,8 @@ py -m PyInstaller --clean --noconfirm ^
     --hidden-import PySide6.QtGui ^
     --hidden-import PySide6.QtWidgets ^
     --hidden-import PySide6.QtBluetooth ^
-    --add-data "%ICON_1%;./resources" ^
-    --add-data "%ICON_2%;./resources" ^
+    --add-data "%ICON_1%;./icons" ^
+    --add-data "%ICON_2%;./icons" ^
      "%SCRIPT%"
 if errorlevel 1 (
   echo [ERROR] PyInstaller failed. See messages above.
