@@ -20,6 +20,9 @@
 #  ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 #  SOFTWARE.\
 
+# EnvDataMqtt_Setup.py
+# Requirements: Python 3.8+, PySide6 (pip pyside6)
+
 import os, sys, pathlib
 sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent))
 from PySide6.QtWidgets import QApplication

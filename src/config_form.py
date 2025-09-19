@@ -26,6 +26,7 @@ from PySide6.QtWidgets import (
 )
 
 from utils import make_ip_validator
+from zero_padded_spinner import ZeroPaddedSpinBox
 
 class ConfigForm(QWidget):
     def __init__(self, parent: Optional[QWidget] = None) -> None:
@@ -56,8 +57,9 @@ class ConfigForm(QWidget):
         bluetooth_form = QFormLayout(self.bluetooth_group)
         bluetooth_form.setContentsMargins(9, 9, 9, 9)
 
-        self.ed_pin = QLineEdit(); self.ed_pin.setMaxLength(6)
-        bluetooth_form.addRow("Bluetooth PIN", self.ed_pin)
+        # Pad the spinner box value with 0's
+        self.sp_pin = ZeroPaddedSpinBox(6); self.sp_pin.setValue(0)
+        bluetooth_form.addRow("Bluetooth PIN", self.sp_pin)
         self.form_layout.addRow(self.bluetooth_group)
 
         # Use DHCP?
@@ -139,7 +141,7 @@ class ConfigForm(QWidget):
         update_pin = self.rb_change_pin_no.isChecked()
         self.bluetooth_group.setVisible(not update_pin)
         if update_pin:
-            self.ed_pin.clear()
+            self.sp_pin.clear()
 
     def _update_ip_visibility(self) -> None:
         use_dhcp = self.rb_dhcp_yes.isChecked()
@@ -172,7 +174,7 @@ class ConfigForm(QWidget):
             raise ValueError("CA certificate exceeds 3072 characters.")
 
         payload = {
-            "bluetoothPin": int(self.ed_pin.text().strip()),
+            "blePasskey": int(self.sp_pin.text().strip()),
             "localIp": "" if use_dhcp else self.ed_local_ip.text().strip(),
             "subnet": "" if use_dhcp else self.ed_subnet.text().strip(),
             "dns1Ip": "" if use_dhcp else self.ed_dns1.text().strip(),
@@ -199,7 +201,7 @@ class ConfigForm(QWidget):
 
     def load_from_dict(self, d: dict) -> None:
         # Uses camelCase keys to match build_json()
-        self.ed_pin.setText(d.get("bluetoothPin", ""))
+        self.sp_pin.setValue(int(d.get("blePasskey", 0)))
         self.ed_local_ip.setText(d.get("localIp", ""))
         self.ed_subnet.setText(d.get("subnet", ""))
         self.ed_dns1.setText(d.get("dns1Ip", ""))
@@ -222,3 +224,13 @@ class ConfigForm(QWidget):
         self.rb_dhcp_yes.setChecked(use_dhcp)
         self.rb_dhcp_no.setChecked(not use_dhcp)
         self._update_ip_visibility()
+
+
+class PaddedSpinBox(QSpinBox):
+    def __init__(self, digits=6, parent=None):
+        super().__init__(parent)
+        self._digits = digits
+        self.setRange(0, 10**digits - 1)
+
+    def textFromValue(self, value: int) -> str:
+        return f"{value:0{self._digits}d}"
